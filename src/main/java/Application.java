@@ -5,13 +5,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Application {
 
     public static  void main(String[] args){
-        ApplicationContext appContext = new AnnotationConfigApplicationContext(AppConfigMain.class);
+//        ApplicationContext appContext = new AnnotationConfigApplicationContext(AppConfigMain.class);
 
-        Google google = appContext.getBean("google", Google.class);
-//        CustomerService customerService = appContext.getBean("customerService", CustomerService.class);
+//        Google google = appContext.getBean("google", Google.class);
 
-//        System.out.println(customerService.findAll().get(0).getFirstname());
-        google.goTo();
-        google.getDriver().quit();
+//        google.goTo();
+//        google.getDriver().quit();
     }
 }

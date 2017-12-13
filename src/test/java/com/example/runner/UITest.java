@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 //        plugin = {"util.TestRailReporter:target/report/TestRailReporter.json"},
 //        tags = {"@test"},
         strict = true,
-//        format = {"pretty","json:target/report/cucumber2.json"},
+        format = {"pretty","json:target/report/cucumber2.json"},
         features = {"src/test/resources/features"},
         glue = {"com/example/steps"}
 )
