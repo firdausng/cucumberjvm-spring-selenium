@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
         strict = true,
         format = {"pretty","json:target/report/cucumber2.json"},
         features = {"src/test/resources/features"},
-        glue = {"com/example/steps"}
+        glue = {"com.example.steps", "com.example.support"}
 )
 public class UITest {
 }
