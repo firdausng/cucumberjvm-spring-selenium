@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 @Component("google")
 public class Google extends Base {
 
+    @Value("${googleUrl}")
+    private String url;
+
     @FindBy(id = "lst-ib")
     private WebElement searchTextBox;
     @FindBy(name = "btnK")
@@ -38,7 +41,7 @@ public class Google extends Base {
     }
 
     public void goTo() {
-        this.driver.get("https://www.google.com");
+        this.driver.get(url);
     }
 
     public void enterSearchQuery(String text) {
