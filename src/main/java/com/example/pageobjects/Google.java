@@ -31,6 +31,11 @@ public class Google extends Base {
         PageFactory.initElements(this.driver, this);
     }
 
+    @Override
+    public boolean isAt() {
+        return false;
+    }
+
     public void goTo() {
         this.driver.get("https://www.google.com");
     }
