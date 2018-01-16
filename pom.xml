@@ -9,8 +9,14 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.version>3.7.0</maven.compiler.version>
+        <cucumber.version>2.1.0</cucumber.version>
+        <cucumber.gherkin.version>5.0.0</cucumber.gherkin.version>
+        <restAssured.version>3.0.5</restAssured.version>
+        <cucumber.jvm.parallel.version>4.2.0</cucumber.jvm.parallel.version>
+        <junit.version>4.12</junit.version>
         <spring.version>5.0.1.RELEASE</spring.version>
-        <!--<spring.version>4.3.13.RELEASE</spring.version>-->
     </properties>
 
     <build>
@@ -23,6 +29,69 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <systemPropertyVariables>
+                        <env>${env}</env>
+                        <!--<testrail>${testrail}</testrail>-->
+                    </systemPropertyVariables>
+                    <!-- Configure concurrent test execution. -->
+                    <forkCount>${surefire.forkNumber}</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <includes>
+                        <!-- Look only for cucumber-jvm-parallel-plugin generated test runner classes. -->
+                        <include>**/*IT.class</include>
+                    </includes>
+                    <useFile>false</useFile>
+                    <redirectTestOutputToFile>${surefire.redirectOutputToFile}</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.temyers</groupId>
+                <artifactId>cucumber-jvm-parallel-plugin</artifactId>
+                <version>${cucumber.jvm.parallel.version}</version>
+                <executions>
+                    <execution>
+                        <id>generateRunners</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>generateRunners</goal>
+                        </goals>
+                        <configuration>
+                            <!-- List of package names to scan for glue code. -->
+                            <glue>
+                                <!--<package>api.steps</package>-->
+                                <package>com.example.steps</package>
+                                <package>com.example.support</package>
+                            </glue>
+                            <!-- When -Dcucumber.tags is passed it will override the tags configuration here. -->
+                            <tags>
+                                <tag>~@wip</tag>
+                                <!-- Should be defaulted otherwise will fail with
+                                'The parameters 'tags' are missing or invalid: [~@wip, null]'-->
+                                <!--<tag>${cucumber.parallel.tags}</tag>-->
+                            </tags>
+                            <plugins>
+                                <plugin>
+                                    <name>pretty</name>
+                                </plugin>
+                                <plugin>
+                                    <name>json</name>
+                                </plugin>
+                                <!--<plugin>-->
+                                <!--<name>testrail.TestRailLogger</name>-->
+                                <!--<noOutput>true</noOutput>-->
+                                <!--</plugin>-->
+                            </plugins>
+                            <cucumberOutputDir>target/cucumber-json-reports</cucumberOutputDir>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -83,4 +152,34 @@
         <!--</dependency>-->
 
     </dependencies>
+
+
+    <profiles>
+        <!-- Default profile to run and debug tests locally. -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>qa</env>
+                <testrail>off</testrail>
+                <surefire.forkNumber>1</surefire.forkNumber>
+                <!-- ~@wip is repeated not to pass null, may be overridden by -Dcucumber.parallel.tags system variable. -->
+                <cucumber.parallel.tags>not @wip</cucumber.parallel.tags>
+                <surefire.redirectOutputToFile>false</surefire.redirectOutputToFile>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- Profile for Jenkins test runs. -->
+        <profile>
+            <id>jenkins</id>
+            <properties>
+                <env>qa</env>
+                <testrail>on</testrail>
+                <cucumber.parallel.tags>not @wip</cucumber.parallel.tags>
+                <surefire.redirectOutputToFile>true</surefire.redirectOutputToFile>
+            </properties>
+        </profile>
+    </profiles>
 </project>

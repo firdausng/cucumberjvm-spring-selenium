@@ -5,3 +5,9 @@ Feature: Google page
     When I query for "cucumber spring selenium"
     And click search
     Then google page title should become "cucumber spring selenium - Google Search"
+
+  Scenario: search google.com again
+      Given I go to google
+      When I query for "cucumber spring selenium"
+      And click search
+      Then google page title should become "cucumber spring selenium - Google Search"
